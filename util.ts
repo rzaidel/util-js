@@ -19,6 +19,9 @@ const toFixed  = (n, doublePartAmount = 2): number => toNumber(toNumber(n).toFix
 const isArrowFn = (fn): boolean => (typeof fn === 'function') && /^[^{]+?=>/.test(fn.toString());
 const isNull = (value: any): boolean => value === null;
 
+const compose = (...fns) => x => fns.reduceRight((v, f) => f(v), x);
+const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
+
 export {
   add,
   sub,
@@ -27,12 +30,14 @@ export {
   toNumber,
   toBigger,
   toSmaller,
-  chain,
+  chainedPipe,
   toFixed,
   toLowerCase,
   toUpperCase,
   isArrowFn,
-  isNull
+  isNull,
+  pipe,
+  compose
 };
 
 
@@ -42,6 +47,7 @@ function checkOnNumberDecorator(wrapper) {
     return  wrapper.apply(this, numbered)
   }
 }
-function chain(action, chain = [], defaultValue = 0) {
+function chainedPipe(action, chain = [], defaultValue = 0) {
   return chain.reduce( (acc, next) => action(acc, next), defaultValue);
 }
+
